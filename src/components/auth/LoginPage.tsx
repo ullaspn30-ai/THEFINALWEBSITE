@@ -134,7 +134,7 @@ export const LoginPage: React.FC = () => {
     <div className="login-container">
       <div className="login-card" style={{ position: "relative" }}>
         {/* Top-right Language Selector */}
-        <div style={{ position: "absolute", top: "16px", right: "16px", zIndex: 10 }}>
+        <div style={{ position: "absolute", top: "16px", right: "16px", zIndex: 10 }} className="login-lang-selector">
           <LanguageSelector compact />
         </div>
 
