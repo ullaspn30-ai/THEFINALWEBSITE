@@ -10,7 +10,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    DATABASE_URL: str = "postgresql://bioshield:bioshield@localhost:5432/bioshield"
+    DATABASE_URL: str = ""
     JWT_SECRET: str = "change-me-to-a-long-random-secret-in-production"
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_EXPIRE_MINUTES: int = 60
