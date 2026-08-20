@@ -1,4 +1,4 @@
-const PRODUCTION_API = "https://agrisentinel-api.onrender.com";
+const PRODUCTION_API = "https://agrisentinel-api-0n2x.onrender.com";
 
 function resolveApiBase(): string {
   const configured = import.meta.env.VITE_API_BASE_URL?.trim();

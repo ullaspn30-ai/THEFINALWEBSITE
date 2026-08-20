@@ -35,10 +35,10 @@ services:
       - key: APP_NAME
         value: AgriSentinel API
       - key: CORS_ORIGINS
-        value: https://backend-farm-mn77.vercel.app,https://backend-farm-mdws.vercel.app,http://localhost:5173
+        value: https://thefinalwebsite.vercel.app,https://backend-farm-mn77.vercel.app,https://backend-farm-mdws.vercel.app,http://localhost:5173
       - key: UPLOAD_DIR
         value: uploads
       - key: DEFAULT_DISTRICT_ID
         value: district-ranchi
       - key: PUBLIC_API_URL
-        value: https://agrisentinel-api.onrender.com
+        value: https://agrisentinel-api-0n2x.onrender.com

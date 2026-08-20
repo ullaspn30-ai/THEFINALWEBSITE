@@ -41,6 +41,28 @@ export const initialFarm: Farm = {
   coordinates: { lat: 23.3441, lng: 85.3096 },
 };
 
+export const ALL_FARMS_OBJECT: Farm = {
+  id: "all",
+  name: "All District Farms",
+  location: "All Zones (District-wide)",
+  owner: "District Animal Husbandry Dept",
+  farmType: "mixed",
+  capacity: 50000,
+  animalCount: 35000,
+  biosecurityScore: 75,
+  previousScore: 70,
+  riskLevel: "safe",
+  visitorsToday: 100,
+  vehiclesToday: 50,
+  complianceRate: 85,
+  vaccinationCoverage: 90,
+  activeIncidents: 4,
+  activeAlerts: 8,
+  updatedAt: now,
+  coordinates: { lat: 23.3441, lng: 85.3096 },
+};
+
+
 export const allFarmsMock: Farm[] = [
   initialFarm,
   {

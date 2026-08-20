@@ -7,12 +7,14 @@ import { translateData } from "../../i18n/dataTranslations";
 import { LanguageSelector } from "./LanguageSelector";
 import { SyncStatusIndicator } from "./SyncStatusIndicator";
 
+import { ALL_FARMS_OBJECT } from "../../data/mockData";
+
 interface NavbarProps {
   onToggleMobileNav?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileNav }) => {
-  const { role, activeFarm, setActiveFarm, myFarms, logout } = useAuth();
+  const { role, activeFarm, setActiveFarm, myFarms, allFarms, logout } = useAuth();
   const { unreadCount, setIsDrawerOpen, refreshNotifications } = useNotifications();
   const { t, locale } = useTranslation();
 
@@ -72,16 +74,34 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileNav }) => {
           {role === "farmer" && <LanguageSelector compact />}
 
           <div className="farm-selector-wrapper">
-            {role === "farmer" && myFarms.length > 1 ? (
+            {role === "farmer" ? (
+              /* Farmer Portal: Strictly locked to their single logged-in farm */
+              <div className="farm-select-dropdown farm-select-readonly" title={activeFarm.location}>
+                {translateData(activeFarm.name, locale)} — {translateData(activeFarm.location, locale)} (
+                {activeFarm.farmType === "poultry"
+                  ? t("status.farmType.poultry")
+                  : activeFarm.farmType === "pig"
+                  ? t("status.farmType.pig")
+                  : t("status.farmType.mixed")}
+                )
+              </div>
+            ) : (
+              /* Veterinarian & Officer Portal: Top Right Farm Selector with 'All Farms' work mode */
               <select
                 value={activeFarm.id}
                 onChange={(e) => {
-                  const found = myFarms.find((f) => f.id === e.target.value);
-                  if (found) setActiveFarm(found);
+                  const val = e.target.value;
+                  if (val === "all") {
+                    setActiveFarm(ALL_FARMS_OBJECT);
+                  } else {
+                    const found = allFarms.find((f) => f.id === val);
+                    if (found) setActiveFarm(found);
+                  }
                 }}
                 className="farm-select-dropdown"
               >
-                {myFarms.map((farm) => (
+                <option value="all">🌐 All Farms (Entire District)</option>
+                {allFarms.map((farm) => (
                   <option key={farm.id} value={farm.id}>
                     {translateData(farm.name, locale)} — {translateData(farm.location, locale)} (
                     {farm.farmType === "poultry"
@@ -93,16 +113,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileNav }) => {
                   </option>
                 ))}
               </select>
-            ) : (
-              <div className="farm-select-dropdown farm-select-readonly" title={activeFarm.location}>
-                {translateData(activeFarm.name, locale)} — {translateData(activeFarm.location, locale)} (
-                {activeFarm.farmType === "poultry"
-                  ? t("status.farmType.poultry")
-                  : activeFarm.farmType === "pig"
-                  ? t("status.farmType.pig")
-                  : t("status.farmType.mixed")}
-                )
-              </div>
             )}
           </div>
 
