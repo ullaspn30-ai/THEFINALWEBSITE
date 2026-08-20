@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -22,6 +23,51 @@ from app.routers import (
 )
 
 
+def _auto_seed():
+    """Run DB migrations + seed on startup if not already done. Safe to call multiple times."""
+    try:
+        import subprocess
+        import sys
+        # Run alembic upgrade head
+        subprocess.run(
+            [sys.executable, "-m", "alembic", "upgrade", "head"],
+            check=True,
+            capture_output=True,
+        )
+    except Exception as e:
+        print(f"[startup] alembic upgrade warning: {e}")
+
+    try:
+        from sqlalchemy.orm import Session
+        from app.database.session import engine
+        from app.models.user import User
+
+        with Session(engine) as db:
+            if db.query(User).filter(User.email == "farmer@bioshield.local").first():
+                print("[startup] Database already seeded. Skipping.")
+                return
+
+        # Import and run seed
+        import importlib.util, os
+        seed_path = os.path.join(os.path.dirname(__file__), "..", "scripts", "seed.py")
+        seed_path = os.path.abspath(seed_path)
+        spec = importlib.util.spec_from_file_location("seed", seed_path)
+        seed_mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(seed_mod)
+        seed_mod.seed()
+        print("[startup] Database seeded successfully.")
+    except Exception as e:
+        print(f"[startup] Seed warning (non-fatal): {e}")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Run on startup
+    _auto_seed()
+    yield
+    # Run on shutdown (nothing needed)
+
+
 def create_app() -> FastAPI:
     app = FastAPI(
         title=settings.APP_NAME,
@@ -29,6 +75,7 @@ def create_app() -> FastAPI:
         version="1.0.0",
         docs_url="/docs",
         redoc_url="/redoc",
+        lifespan=lifespan,
     )
 
     origins = settings.cors_origin_list
