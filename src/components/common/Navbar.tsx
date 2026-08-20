@@ -14,7 +14,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileNav }) => {
-  const { role, activeFarm, setActiveFarm, myFarms, allFarms, logout } = useAuth();
+  const { role, activeFarm, setActiveFarm, allFarms, logout } = useAuth();
   const { unreadCount, setIsDrawerOpen, refreshNotifications } = useNotifications();
   const { t, locale } = useTranslation();
 
